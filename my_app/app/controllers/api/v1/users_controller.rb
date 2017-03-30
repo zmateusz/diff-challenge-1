@@ -10,6 +10,17 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def sign_in
+    user = User.find_by(email: params[:email])
+    if user
+      if user.authenticate(params[:password])
+        user.generate_access_token
+        render json: { access_token: user.access_token }
+      else
+        render json: { error: 'Wrong password' }, status: :unprocessable_entity
+      end
+    else
+      render json: { error: 'Wrong email' }, status: :unprocessable_entity
+    end
   end
 
   private
