@@ -5,6 +5,8 @@ Rails.application.routes.draw do
         post 'sign_up'
         post 'sign_in'
       end
+
+      resources :orders, only: :index
     end
   end
 

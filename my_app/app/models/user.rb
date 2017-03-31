@@ -5,9 +5,9 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: { case_sensitive: false }
 
   def generate_access_token
-    token = rand(0..100)
+    token = SecureRandom.hex
     while User.find_by(access_token: token)
-      token = rand(0..100)
+      token = SecureRandom.hex
     end
 
     update(access_token: token)
