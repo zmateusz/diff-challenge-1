@@ -6,6 +6,7 @@ Rails.application.routes.draw do
         post 'sign_in'
       end
 
+      resources :groups, only: [:index, :create]
       resources :orders, only: :index
     end
   end
