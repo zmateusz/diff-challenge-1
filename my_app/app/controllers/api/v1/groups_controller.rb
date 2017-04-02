@@ -1,4 +1,8 @@
 class Api::V1::GroupsController < ApplicationController
+  def index
+    render json: { results: Group.all.includes(:users).map(&:serialized_params) }
+  end
+
   def create
     with_authorization do |current_user|
       emails = group_params[:emails]
@@ -11,7 +15,7 @@ class Api::V1::GroupsController < ApplicationController
       group = Group.create
       users.each { |user| GroupMembership.create(group: group, user: user) }
 
-      head: :created
+      head :created
     end
   end
 

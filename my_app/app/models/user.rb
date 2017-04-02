@@ -4,7 +4,6 @@ class User < ApplicationRecord
   has_many :group_memberships, dependent: :destroy
   has_many :groups, through: :group_memberships
 
-  validates :access_token, uniqueness: true
   validates :email, presence: true, uniqueness: { case_sensitive: false }
 
   def generate_access_token
