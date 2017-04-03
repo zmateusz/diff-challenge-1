@@ -3,7 +3,11 @@ class User < ApplicationRecord
 
   has_many :group_memberships, dependent: :destroy
   has_many :groups, through: :group_memberships
-  has_many :orders
+
+  has_many :order_invitations, dependent: :destroy
+  has_many :orders, through: :order_invitations
+
+  has_many :founded_orders, class_name: 'Order', foreign_key: 'user_id'
 
   validates :email, presence: true, uniqueness: { case_sensitive: false }
 
