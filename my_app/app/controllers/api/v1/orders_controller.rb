@@ -1,14 +1,20 @@
 class Api::V1::OrdersController < ApplicationController
   def index
-    with_authorization do
-      render json: { results: Order.all.includes(:founder).includes(:users).map(&:serialized_params) }
+    with_authorization do |current_user|
+      orders = current_user.orders.order(created_at: :desc).includes(:founder).includes(:users).map(&:serialized_params)
+      orders += current_user.founded_orders.order(created_at: :desc).includes(:founder).includes(:users).map(&:serialized_params)
+      render json: { results: orders }
     end
   end
 
   def create
     with_authorization do |current_user|
       order = Order.new(founder: current_user, restaurant: order_params[:restaurant])
-      users = User.where(email: order_params[:invited_users_emails])
+      users = if order_params[:group_id].present?
+        Group.find(order_params[:group_id]).users - [current_user]
+      else
+        User.where(email: order_params[:invited_users_emails])
+      end
       order.users << users
 
       if order.save
@@ -22,6 +28,6 @@ class Api::V1::OrdersController < ApplicationController
   private
 
   def order_params
-    params.require(:order).permit(:restaurant, invited_users_emails: [])
+    params.require(:order).permit(:group_id, :restaurant, invited_users_emails: [])
   end
 end
