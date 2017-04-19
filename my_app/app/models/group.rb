@@ -5,7 +5,8 @@ class Group < ApplicationRecord
   def serialized_params
     {
       id: id,
-      users: users.map { |user| { email: user.email } }
+      users: users.present? ? users.map { |user| { email: user.email } } : nil,
+      domain: domain
     }
   end
 end
