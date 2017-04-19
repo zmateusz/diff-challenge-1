@@ -6,6 +6,8 @@ class Api::V1::GroupsController < ApplicationController
   end
 
   def create
+    head :unprocessable_entity and return if params[:group][:domain]
+
     with_authorization do |current_user|
       emails = group_params[:emails]
       users = [current_user]

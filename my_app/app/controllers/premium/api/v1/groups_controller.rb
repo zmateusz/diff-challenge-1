@@ -7,9 +7,13 @@ class Premium::Api::V1::GroupsController < ApplicationController
 
   def create
     with_authorization do |current_user|
-      Group.find_or_create_by(domain: group_params[:domain])
+      if current_user.email.split('@')[1] == group_params[:domain]
+        Group.find_or_create_by(domain: group_params[:domain])
 
-      head :created
+        head :created
+      else
+        head :unprocessable_entity
+      end
     end
   end
 
