@@ -15,6 +15,7 @@ class Api::V1::OrdersController < ApplicationController
       end
 
       order = Order.new(founder: current_user, restaurant: order_params[:restaurant])
+      order.group_id = order_params[:group_id]
       order.users << users + [current_user]
       if order.save
         head :created
