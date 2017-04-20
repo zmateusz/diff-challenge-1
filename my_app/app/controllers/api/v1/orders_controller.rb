@@ -1,8 +1,11 @@
 class Api::V1::OrdersController < ApplicationController
   def index
     with_authorization do |current_user|
-      orders = current_user.orders.order(created_at: :desc).includes(:founder).includes(:users).map(&:serialized_params)
-      render json: { results: orders }
+      orders = orders_base(current_user)
+                .includes(:founder)
+                .includes(:users)
+                .order(created_at: :desc)
+      render json: { results: orders.map(&:serialized_params) }
     end
   end
 
@@ -26,6 +29,10 @@ class Api::V1::OrdersController < ApplicationController
   end
 
   private
+
+  def orders_base(current_user)
+    current_user.orders
+  end
 
   def order_params
     params.require(:order).permit(:group_id, :restaurant, invited_users_emails: [])

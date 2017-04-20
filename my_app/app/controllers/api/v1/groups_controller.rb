@@ -1,7 +1,8 @@
 class Api::V1::GroupsController < ApplicationController
   def index
     with_authorization do
-      render json: { results: Group.all.order(created_at: :desc).includes(:users).map(&:serialized_params) }
+      groups = Group.all.order(created_at: :desc).includes(:users)
+      render json: { results: groups.map(&:serialized_params) }
     end
   end
 

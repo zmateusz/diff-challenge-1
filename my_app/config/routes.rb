@@ -13,13 +13,9 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :premium do
-    namespace :api do
-      namespace :v1 do
-        resources :groups, only: [:index, :create]
-        resources :orders, only: [:index]
-      end
-    end
+  scope '/premium/api/v1' do
+    resources :groups, only: [:index, :create], controller: 'api/v1/premium/groups'
+    resources :orders, only: [:index]         , controller: 'api/v1/premium/orders'
   end
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
